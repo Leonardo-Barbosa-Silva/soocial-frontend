@@ -7,7 +7,7 @@ export const loginUser = createAsyncThunk(
     async (userData, thunkAPI) => {
         try {
             const resp = await API.USERS.post("/auth/login", userData)
-            return resp.response.data
+            return resp.data
 
         } catch (error) {
             const message = (error.response && error.response.data && error.response.data.message.toString()) ||
@@ -23,12 +23,32 @@ export const registerUser = createAsyncThunk(
     'auth/register',
     async (userData, thunkAPI) => {
         try {
-            const resp = await API.POSTS.post("/auth/register", userData)
+            const resp = await API.USERS.post("/auth/register", userData)
             
-            return resp.response.data
+            return resp.data
 
         } catch (error) {
-            console.log(error)
+            const message = (error.response && error.response.data && error.response.data.message) ||
+                error.message || error.toString()
+
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const getMe = createAsyncThunk(
+    'get/me',
+    async (userToken, thunkAPI) => {
+        try {
+            const resp = await API.USERS.get("/me", {
+                headers: {
+                    Authorization: `Bearer ${userToken}`
+                }
+            })
+            
+            return resp.data
+
+        } catch (error) {
             const message = (error.response && error.response.data && error.response.data.message) ||
                 error.message || error.toString()
 
@@ -41,5 +61,6 @@ export const registerUser = createAsyncThunk(
 
 export const userService = {
     loginUser,
-    registerUser
+    registerUser,
+    getMe
 }
