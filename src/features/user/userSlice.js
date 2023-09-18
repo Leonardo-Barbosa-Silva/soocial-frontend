@@ -3,7 +3,7 @@ import { userService } from "./userService";
 
 
 const initialState = {
-    mode: "light",
+    mode: "dark",
     user: null,
     token: null,
     posts: [],
